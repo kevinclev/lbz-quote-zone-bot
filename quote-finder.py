@@ -44,7 +44,11 @@ async def quotes(ctx, member: discord.Member):
     # where as the Member class does not do this so I had to insert it myself so that the filter would work
     # filter basically looks for the user being quoted since our format always is "- @user" for someone being
     # quoted
-    msg_filter = '- ' + name[:2] + '!' + name[2:]
+    if '!' in name:
+        msg_filter = '- ' + name
+    else:
+        msg_filter = '- ' + name[:2] + '!' + name[2:]
+        
     quotes = []
 
     for msg in messages:
