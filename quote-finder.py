@@ -13,6 +13,21 @@ intents.members = True
 
 bot = commands.Bot(command_prefix='!')
 
+@bot.event
+async def on_ready():
+    print('Logged in as')
+    print(bot.user.name)
+    print(bot.user.id)
+    print('-------')
+
+# handle CommandNotFound errors so that the output isn't ass blasted by this error.
+# because likely there are other bots that use the ! as prefix
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        pass
+
+
 @bot.command(name="version", description="Shows the version of the bot.")
 async def version(ctx):
     await ctx.send("beta af, don't get mad if I mess something up")
@@ -43,5 +58,11 @@ async def quotes(ctx, member: discord.Member):
     else:
         await ctx.send("\n".join(quotes))
 
+@quotes.error
+async def quotes_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("You must specify a user.")
+    elif isinstance(error, commands.MemberNotFound):
+        await ctx.send("Not a valid user")
 
 bot.run(discord_token)
